@@ -71,7 +71,7 @@ class mTransKey():
             "exE2E": "false",
             "isCrt": "false",
             "allocationIndex": str(randint(0, 0xffffffff)),
-            "keyIndex": self.crypto.rsa_encrypt(bytes([randint(0, 62)])),
+            "keyIndex": self.crypto.rsa_encrypt(bytes([randint(0, 67)])),
             "initTime": self.initTime,
             "TK_requestToken": self.token,
             "dummy": "undefined",
