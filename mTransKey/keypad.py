@@ -29,8 +29,7 @@ class KeyPad():
             ybytes = bytes(map(int, list(y)))
             randnum = randint(0, 100)
 
-            if self.key_type == "number":
-                data = b"%b %b e%c" % (xbytes, ybytes, randnum)
+            data = b"%b %b e%c" % (xbytes, ybytes, randnum)
                 
             iv = bytes([0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x54, 0x72,
                         0x61, 0x6e, 0x73, 0x4b, 0x65, 0x79, 0x31, 0x30])
