@@ -70,8 +70,8 @@ class mTransKey():
             "transkeyUuid": self.crypto.uuid,
             "exE2E": "false",
             "isCrt": "false",
-            "allocationIndex": "3011907012",
-            "keyIndex": self.crypto.rsa_encrypt(b"32"),
+            "allocationIndex": "3011907012", # 이것도 랜덤인데 몬가.. 기차나요..
+            "keyIndex": self.crypto.rsa_encrypt(b"32"), # 랜덤
             "initTime": self.initTime,
             "TK_requestToken": self.token,
             "dummy": "undefined",

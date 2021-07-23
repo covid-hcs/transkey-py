@@ -26,8 +26,7 @@ class Crypto():
         return cipher.encrypt(data).hex()
 
     def get_encrypted_key(self):
-        cipher = PKCS1_OAEP.new(key=self.key, hashAlgo=SHA1)
-        return cipher.encrypt(self.genSessionKey.encode()).hex()
+        return self.rsa_encrypt(self.genSessionKey.encode())
 
     def hmac_digest(self, msg: bytes):
         return hmac.new(
