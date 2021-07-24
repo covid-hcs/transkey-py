@@ -1,4 +1,3 @@
-from . import chars
 from random import randint
 
 class KeyPad():

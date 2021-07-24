@@ -18,7 +18,7 @@ class mTransKey():
         self.initTime = ""
         self.number = []
         self.allocIndex = str(randint(0, 0xffffffff))
-        self.keyIndex = randint(0, 67)
+        self.keyIndex = str(randint(0, 67))
         
         self._get_token()
         self._get_init_time()
@@ -94,4 +94,4 @@ class mTransKey():
         return self.crypto.uuid
     
     def get_encrypted_keyIndex(self):
-        return self.crypto.rsa_encrypt(bytes([self.keyIndex]))
+        return self.crypto.rsa_encrypt(self.keyIndex.encode("ascii"))
