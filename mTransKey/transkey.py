@@ -62,6 +62,9 @@ class mTransKey():
         self.number = number_keys
 
     def new_keypad(self, key_type, name, inputName, fieldType = "password"):
+        if key_type != "number":
+            raise Exception("Only Number")
+            
         skip_data = self.sess.post(self.servlet_url, data={
             "op": "getDummy",
             "name": name,
@@ -73,7 +76,7 @@ class mTransKey():
             "exE2E": "false",
             "isCrt": "false",
             "allocationIndex": self.allocIndex,
-            "keyIndex": self.crypto.rsa_encrypt(bytes([self.keyIndex])),
+            "keyIndex": self.get_encrypted_keyIndex(),
             "initTime": self.initTime,
             "TK_requestToken": self.token,
             "dummy": "undefined",
@@ -89,3 +92,6 @@ class mTransKey():
 
     def get_uuid(self):
         return self.crypto.uuid
+    
+    def get_encrypted_keyIndex(self):
+        return self.crypto.rsa_encrypt(bytes([self.keyIndex]))
