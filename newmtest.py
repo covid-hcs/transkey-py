@@ -17,7 +17,7 @@ passs = {"raon": [
         "enc": encrypted,
         "hmac": hm,
         "keyboardType": "number",
-        "keyIndex": mtk.crypto.rsa_encrypt(b"32"), #음.. numberSize까지 랜덤(min: 0, max: 67) 이긴한데 그냥 고정을(?) 
+        "keyIndex": mtk.get_encrypted_keyIndex(), 
         "fieldType": "password",
         "seedKey": mtk.crypto.get_encrypted_key(),
         "initTime": mtk.initTime,
