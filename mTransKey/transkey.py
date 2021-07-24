@@ -17,6 +17,8 @@ class mTransKey():
         self.token = ""
         self.initTime = ""
         self.number = []
+        self.allocIndex = str(randint(0, 0xffffffff))
+        self.keyIndex = randint(0, 67)
         
         self._get_token()
         self._get_init_time()
@@ -70,8 +72,8 @@ class mTransKey():
             "transkeyUuid": self.crypto.uuid,
             "exE2E": "false",
             "isCrt": "false",
-            "allocationIndex": str(randint(0, 0xffffffff)),
-            "keyIndex": self.crypto.rsa_encrypt(bytes([randint(0, 67)])),
+            "allocationIndex": self.allocIndex,
+            "keyIndex": self.crypto.rsa_encrypt(bytes([self.keyIndex])),
             "initTime": self.initTime,
             "TK_requestToken": self.token,
             "dummy": "undefined",
