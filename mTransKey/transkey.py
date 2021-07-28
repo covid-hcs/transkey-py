@@ -22,7 +22,7 @@ class mTransKey():
 
         self.number = []
         self.allocIndex = str(randint(0, 0xffffffff))
-        self.keyIndex = str(randint(0, 67))
+        self.keyIndex = str(randint(0, 58))
         
         self._get_token()
         self._get_init_time()
