@@ -15,7 +15,11 @@ class mTransKey():
         self.servlet_url = servlet_url
         self.crypto = crypto.Crypto()
         self.token = ""
+
         self.initTime = ""
+        self.decInitTime=""
+        self.useSession=False
+
         self.number = []
         self.allocIndex = str(randint(0, 0xffffffff))
         self.keyIndex = str(randint(0, 67))
@@ -32,8 +36,9 @@ class mTransKey():
     def _get_init_time(self):
         txt = self.sess.get("{}?op=getInitTime".format(self.servlet_url)).text
         self.initTime = re.findall("var initTime='(.*)';", txt)[0]
-        print(self.initTime)
-    
+        self.decInitTime = re.findall("var decInitTime='(.*)';", txt)[0]
+        self.useSession = re.findall("var useSession=(.*);", txt)[0] == "true"
+        
     def _get_public_key(self):
         key = self.sess.post(self.servlet_url, data={
             "op": "getPublicKey",
@@ -85,7 +90,7 @@ class mTransKey():
 
         skip = skip_data.split(",")
         
-        return KeyPad(self.crypto, key_type, skip, self.number)
+        return KeyPad(self.crypto, key_type, skip, self.number, self.decInitTime, self.useSession)
     
     def hmac_digest(self, message):
         return self.crypto.hmac_digest(message)

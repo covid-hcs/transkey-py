@@ -1,7 +1,7 @@
 from random import randint
 
 class KeyPad():
-    def __init__(self, crypto, key_type, skip_data, keys):
+    def __init__(self, crypto, key_type, skip_data, keys, decInitTime, useSession):
         if key_type != "number":
             raise Exception("Only Number")
 
@@ -9,6 +9,9 @@ class KeyPad():
         self.key_type = key_type
         self.skip_data = skip_data
         self.keys = keys
+
+        self.decInitTime = decInitTime
+        self.useSession = useSession
 
     def get_geo(self, message):
         geos = []
@@ -20,7 +23,11 @@ class KeyPad():
         return geos
 
     def geos_encrypt(self, geos):
+        iv = bytes([0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x54, 0x72,
+                        0x61, 0x6e, 0x73, 0x4b, 0x65, 0x79, 0x31, 0x30])
         out = ""
+        encrypted_data = self.crypto.seed_encrypt(iv, self.decInitTime.encode("ascii")).hex(",")
+
         for geo in geos:
             x, y = geo
             
@@ -30,10 +37,11 @@ class KeyPad():
 
             data = b"%b %b e%c" % (xbytes, ybytes, randnum)
                 
-            iv = bytes([0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x54, 0x72,
-                        0x61, 0x6e, 0x73, 0x4b, 0x65, 0x79, 0x31, 0x30])
 
-            out += "$"+self.crypto.seed_encrypt(iv, data).hex(",")
+            if not self.useSession:
+                out += "$"+self.crypto.seed_encrypt(iv, data).hex(",") + "$" + encrypted_data
+            else:
+                out += "$"+self.crypto.seed_encrypt(iv, data).hex(",")
         return out
     
     def encrypt_password(self, pw):
