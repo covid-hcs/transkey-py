@@ -1107,6 +1107,7 @@ class SEED:
         self.__SeedRound__(R0, R1, L0, L1, K, 26)
         self.__SeedRound__(L0, L1, R0, R1, K, 28)
         self.__SeedRound__(R0, R1, L0, L1, K, 30)
+        
         if L_ENDIAN == 1:
             return struct.pack('>LLLL', endianchange(R0[0]), endianchange(R1[0]), endianchange(L0[0]), endianchange(L1[0]))
         else:
@@ -1210,7 +1211,7 @@ class SEED:
             T1)] ^ SS2[GetB2(T1)] ^ SS3[GetB3(T1)]
         for i in range(32):
             RoundKey[i] &= 4294967295
-
+            
         return RoundKey
 
     def __RoundKeyUpdate0__(self, K, off, A, B, C, D, KC):
@@ -1259,9 +1260,14 @@ class SEED:
         return encData
 
     def my_cbc_encrypt(self, inData, k, iv):
-        xored = []
-        for i in range(0, 16):
-            xored.append(iv[i] ^ inData[i])
+        prev = iv
+        enced = b""
 
-        enc = self.SeedEncrypt(bytes(xored), k)
-        return enc
+        for i in range(0, len(inData), 16):
+            xored = []
+            for j in range(0, 16):
+                xored.append(prev[j] ^ inData[i+j])
+            enc = self.SeedEncrypt(bytes(xored), k)
+            enced += enc
+            prev = enc
+        return enced

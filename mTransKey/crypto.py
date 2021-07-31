@@ -16,10 +16,10 @@ class Crypto():
         self.key = None
         self.sessionKey = [int(i, 16) for i in list(self.genSessionKey)]
         
-    def _pad(self, txt):
-        if len(txt) < 16:
-            txt += b'\x00'*(16 - len(txt))
-        return txt
+    # def _pad(self, txt):
+    #     if len(txt) < 16:
+    #         txt += b'\x00'*(16 - len(txt))
+    #     return txt
 
     def rsa_encrypt(self, data):
         cipher = PKCS1_OAEP.new(key=self.key, hashAlgo=SHA1)
@@ -38,7 +38,7 @@ class Crypto():
     def seed_encrypt(self, iv, data):
         s = seed.SEED()
         round_key = s.SeedRoundKey(bytes(self.sessionKey))
-        return s.my_cbc_encrypt(self._pad(data), round_key, iv)
+        return s.my_cbc_encrypt(data, round_key, iv)
     
     def set_pub_key(self, b64):
         data = b64decode(b64)

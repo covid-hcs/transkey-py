@@ -1,7 +1,7 @@
 from random import randint
 
 class KeyPad():
-    def __init__(self, crypto, key_type, skip_data, keys, decInitTime, useSession):
+    def __init__(self, crypto, key_type, skip_data, keys, useSession, initTime):
         if key_type != "number":
             raise Exception("Only Number")
 
@@ -10,7 +10,8 @@ class KeyPad():
         self.skip_data = skip_data
         self.keys = keys
 
-        self.decInitTime = decInitTime
+        self.initTime = initTime
+        
         self.useSession = useSession
 
     def get_geo(self, message):
@@ -23,27 +24,35 @@ class KeyPad():
         return geos
 
     def geos_encrypt(self, geos):
-        iv = bytes([0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x54, 0x72,
-                        0x61, 0x6e, 0x73, 0x4b, 0x65, 0x79, 0x31, 0x30])
+        iv = bytes([0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x4b, 0x65, 0x79, 0x31, 0x30])
         out = ""
-        encrypted_data = self.crypto.seed_encrypt(iv, self.decInitTime.encode("ascii")).hex(",")
 
         for geo in geos:
             x, y = geo
             
             xbytes = bytes(map(int, list(x)))
             ybytes = bytes(map(int, list(y)))
-            randnum = randint(0, 100)
-
-            data = b"%b %b e%c" % (xbytes, ybytes, randnum)
-                
-
-            if not self.useSession:
-                out += "$"+self.crypto.seed_encrypt(iv, data).hex(",") + "$" + encrypted_data
-            else:
-                out += "$"+self.crypto.seed_encrypt(iv, data).hex(",")
+            
+            data = b"%b %b %b %%b" % (xbytes, ybytes, self._time_to_bytes())
+            data += self._randomBytes(48-len(data))
+            out += "$"+self.crypto.seed_encrypt(iv, data).hex(",")
         return out
     
     def encrypt_password(self, pw):
         geos = self.get_geo(pw)
         return self.geos_encrypt(geos)
+
+    def _randomBytes(self, length):
+        out = []
+        for _ in range(length):
+            out.append(randint(0, 100))
+        return bytes(out)
+    
+    def _time_to_bytes(self):
+        out = []
+        for char in self.initTime:
+            if char.isalpha():
+                out.append(ord(char))
+            else:
+                out.append(int(char))
+        return bytes(out)
