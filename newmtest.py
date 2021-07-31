@@ -1,15 +1,12 @@
 import requests
 from mTransKey.transkey import mTransKey
 
-ID = ""
-PW = ""
-
 sess = requests.session()
 mtk = mTransKey(sess, "https://hcs.eduro.go.kr/transkeyServlet")
 
 pw_pad = mtk.new_keypad("number", "password", "password", "password")
 
-encrypted = pw_pad.encrypt_password("")
+encrypted = pw_pad.encrypt_password("1415")
 hm = mtk.hmac_digest(encrypted.encode())
 passs = {"raon": [
     {
@@ -17,7 +14,7 @@ passs = {"raon": [
         "enc": encrypted,
         "hmac": hm,
         "keyboardType": "number",
-        "keyIndex": mtk.get_encrypted_keyIndex(), 
+        "keyIndex": pw_pad.get_key_index(), 
         "fieldType": "password",
         "seedKey": mtk.crypto.get_encrypted_key(),
         "initTime": mtk.initTime,
