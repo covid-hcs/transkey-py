@@ -23,13 +23,11 @@ class mTransKey():
 
         self.number = []
         self.allocIndex = str(randint(0, 0xffffffff))
-        self.keyIndex = str(randint(0, 57)).zfill(2)
 
         self._get_token()
         self._get_init_time()
         self._get_public_key()
         self._get_key_info()
-        self._get_key_index()
 
     def _get_token(self):
         txt = self.sess.get("{}?op=getToken".format(self.servlet_url)).text
@@ -67,7 +65,10 @@ class mTransKey():
 
         self.number = number_keys
 
-    def _get_key_index(self):
+    def new_keypad(self, key_type, name, inputName, fieldType="password"):
+        if key_type != "number":
+            raise Exception("Only Number")
+
         key_index = requests.post(self.servlet_url, data={
             "op": "getKeyIndex",
             "name": "password",
@@ -86,12 +87,6 @@ class mTransKey():
             "talkBack": "true"
         }).text
 
-        self.keyIndex = key_index
-
-    def new_keypad(self, key_type, name, inputName, fieldType="password"):
-        if key_type != "number":
-            raise Exception("Only Number")
-
         skip_data = self.sess.post(self.servlet_url, data={
             "op": "getDummy",
             "name": name,
@@ -103,7 +98,7 @@ class mTransKey():
             "exE2E": "false",
             "isCrt": "false",
             "allocationIndex": self.allocIndex,
-            "keyIndex": self.keyIndex,
+            "keyIndex": key_index,
             "initTime": self.initTime,
             "TK_requestToken": self.token,
             "dummy": "undefined",
@@ -112,7 +107,7 @@ class mTransKey():
 
         skip = skip_data.split(",")
 
-        return KeyPad(self.crypto, key_type, skip, self.number, self.useSession, self.initTime)
+        return KeyPad(self.crypto, key_type, skip, self.number, key_index, self.initTime)
 
     def hmac_digest(self, message):
         return self.crypto.hmac_digest(message)

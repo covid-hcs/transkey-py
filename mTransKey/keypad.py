@@ -1,7 +1,7 @@
 from random import randint
 
 class KeyPad():
-    def __init__(self, crypto, key_type, skip_data, keys, useSession, initTime):
+    def __init__(self, crypto, key_type, skip_data, keys, key_index, initTime):
         if key_type != "number":
             raise Exception("Only Number")
 
@@ -11,8 +11,7 @@ class KeyPad():
         self.keys = keys
 
         self.initTime = initTime
-        
-        self.useSession = useSession
+        self.key_index = key_index
 
     def get_geo(self, message):
         geos = []
@@ -56,3 +55,6 @@ class KeyPad():
             else:
                 out.append(int(char))
         return bytes(out)
+    
+    def get_key_index(self):
+        return self.key_index
