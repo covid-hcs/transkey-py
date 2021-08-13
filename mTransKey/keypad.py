@@ -32,7 +32,7 @@ class KeyPad():
             xbytes = bytes(map(int, list(x)))
             ybytes = bytes(map(int, list(y)))
             
-            data = b"%b %b %b %%b" % (xbytes, ybytes, self._time_to_bytes())
+            data = b"%b %b %b %%" % (xbytes, ybytes, self._time_to_bytes())
             data += self._randomBytes(48-len(data))
             out += "$"+self.crypto.seed_encrypt(iv, data).hex(",")
         return out
